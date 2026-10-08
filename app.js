@@ -3005,6 +3005,7 @@ const WorkUI = {
         <label class="form-label">اکیپ <span class="req">*</span></label>
         <select class="form-select" id="wrkCrew">${crewsOpts}</select>
       </div>
+
       <div class="form-group">
         <label class="form-label">نوع محاسبه <span class="req">*</span></label>
         <div class="chips" id="wrkCalcChips" style="padding-bottom:4px;">
@@ -3014,25 +3015,72 @@ const WorkUI = {
           <div class="chip" data-calc="fixed">قراردادی</div>
         </div>
       </div>
-      <div class="form-row">
+
+      <div class="form-group" id="wrkModeGroup">
+        <label class="form-label">حالت محاسبه روز</label>
+        <div class="chips" id="wrkModeChips" style="padding-bottom:4px;">
+          <div class="chip" data-mode="auto">خودکار (با تاریخ)</div>
+          <div class="chip" data-mode="manual">دستی</div>
+        </div>
+      </div>
+
+      <div id="wrkAutoGroup">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">تاریخ شروع کار <span class="req">*</span></label>
+            <div class="date-field">
+              <input class="form-input" id="wrkStartDate" data-datepicker value="${esc(item.startDate || item.date || JALALI.todayStr())}" />
+              <svg class="cal-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">تاریخ پایان کار <span class="req">*</span></label>
+            <div class="date-field">
+              <input class="form-input" id="wrkEndDate" data-datepicker value="${esc(item.endDate || '')}" />
+              <svg class="cal-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group" style="display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--input-bg); border-radius:12px; border:1.5px solid var(--divider);">
+          <input type="checkbox" id="wrkSkipFriday" style="width:18px; height:18px; accent-color:var(--gold); cursor:pointer;" checked />
+          <label for="wrkSkipFriday" style="font-size:12.5px; font-weight:500; color:var(--text); cursor:pointer; margin:0;">
+            جمعه‌ها حساب نشه
+          </label>
+        </div>
+
+        <div class="glass-card" style="padding:10px 14px; margin-bottom:14px;">
+          <div style="display:flex; justify-content:space-between; font-size:12.5px;">
+            <span style="color:var(--text-soft);">تعداد روز محاسبه‌شده:</span>
+            <b id="wrkAutoDays" style="color:var(--gold);">۰ روز</b>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row" id="wrkQtyGroup">
         <div class="form-group">
           <label class="form-label" id="wrkQtyLabel">تعداد روز</label>
-          <input class="form-input" id="wrkQty" type="tel" inputmode="decimal" value="${item.qty || ''}" placeholder="۰" />
+          <input class="form-input" id="wrkQty" type="tel" inputmode="decimal" value="${item.qty || ''}" placeholder="۰ (می‌تونی ۰.۵ هم وارد کنی)" />
         </div>
+      </div>
+
+      <div class="form-row">
         <div class="form-group">
-          <label class="form-label" id="wrkRateLabel">نرخ (تومان)</label>
+          <label class="form-label" id="wrkRateLabel">نرخ روزانه (تومان)</label>
           <input class="form-input" id="wrkRate" type="tel" inputmode="numeric" value="${item.rate || ''}" placeholder="۰" />
         </div>
       </div>
+
       <div class="glass-card" style="margin-bottom:14px; padding:12px;">
-        <div style="display:flex; justify-content:space-between; font-size:12.5px;">
-          <span style="color:var(--text-soft);">مبلغ محاسبه‌شده:</span>
-          <b id="wrkTotal" style="color:var(--gold);">۰ تومان</b>
+        <div style="display:flex; justify-content:space-between; font-size:13px;">
+          <span style="color:var(--text-soft); font-weight:600;">مبلغ کل:</span>
+          <b id="wrkTotal" style="color:var(--gold); font-size:14px;">۰ تومان</b>
         </div>
       </div>
+
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">تاریخ <span class="req">*</span></label>
+          <label class="form-label">تاریخ ثبت <span class="req">*</span></label>
           <div class="date-field">
             <input class="form-input" id="wrkDate" data-datepicker value="${esc(item.date || JALALI.todayStr())}" />
             <svg class="cal-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
@@ -3046,10 +3094,12 @@ const WorkUI = {
           </select>
         </div>
       </div>
+
       <div class="form-group">
         <label class="form-label">توضیحات / شرح کار</label>
         <textarea class="form-textarea" id="wrkDesc">${esc(item.description || '')}</textarea>
       </div>
+
       <div class="form-group">
         <label class="form-label">وضعیت تسویه</label>
         <select class="form-select" id="wrkPaid">
@@ -3057,35 +3107,112 @@ const WorkUI = {
           <option value="true"  ${item.paid  ? 'selected' : ''}>تسویه‌شده</option>
         </select>
       </div>
+
       <button class="btn btn-primary" id="wrkSave">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
         ذخیره
       </button>
+
       ${!isNew ? `<button class="btn btn-danger" id="wrkDelete" style="margin-top:10px;">حذف</button>` : ''}
     `, (root) => {
+
       attachDatePicker($('#wrkDate', root));
+      attachDatePicker($('#wrkStartDate', root));
+      attachDatePicker($('#wrkEndDate', root));
 
       let calcType = item.calcType || 'daily';
+      let mode = item.mode || (item.startDate && item.endDate ? 'auto' : 'manual');
+      if (!item.qty && !item.endDate) mode = 'auto';
 
-      const setChips = () => {
+      const calcDaysAuto = () => {
+        const startStr = $('#wrkStartDate', root).value;
+        const endStr = $('#wrkEndDate', root).value;
+        const skipFriday = $('#wrkSkipFriday', root).checked;
+
+        const sp = JALALI.parseJ(startStr);
+        const ep = JALALI.parseJ(endStr);
+
+        if (!sp || !ep) {
+          $('#wrkAutoDays', root).textContent = '۰ روز';
+          return 0;
+        }
+
+        const diff = JALALI.daysBetween(sp, ep);
+        if (diff < 0) {
+          $('#wrkAutoDays', root).innerHTML = '<span style="color:#EF4444;">تاریخ پایان قبل از شروع است!</span>';
+          return 0;
+        }
+
+        let totalDays = diff + 1;
+
+        if (skipFriday) {
+          let fridays = 0;
+          for (let i = 0; i <= diff; i++) {
+            const [gy, gm, gd] = JALALI.j2g(sp[0], sp[1], sp[2]);
+            const d = new Date(gy, gm - 1, gd + i);
+            if (d.getDay() === 5) fridays++;
+          }
+          totalDays -= fridays;
+        }
+
+        $('#wrkAutoDays', root).textContent = toFa(totalDays) + ' روز';
+        return totalDays;
+      };
+
+      const setModeChips = () => {
+        $$('#wrkModeChips .chip', root).forEach((ch) => {
+          ch.classList.toggle('active', ch.dataset.mode === mode);
+        });
+
+        if (mode === 'auto') {
+          $('#wrkAutoGroup', root).style.display = '';
+          $('#wrkQtyGroup', root).style.display = 'none';
+        } else {
+          $('#wrkAutoGroup', root).style.display = 'none';
+          $('#wrkQtyGroup', root).style.display = '';
+        }
+      };
+
+      const setCalcChips = () => {
         $$('#wrkCalcChips .chip', root).forEach((ch) => {
           ch.classList.toggle('active', ch.dataset.calc === calcType);
         });
+
         const labels = {
-          daily:  { qty: 'تعداد روز',   rate: 'نرخ روزانه (تومان)' },
-          sqm:    { qty: 'متراژ (متر)', rate: 'نرخ هر متر (تومان)' },
-          hourly: { qty: 'تعداد ساعت',  rate: 'نرخ ساعتی (تومان)' },
-          fixed:  { qty: '—',           rate: 'مبلغ کل (تومان)' }
+          daily:  { rate: 'نرخ روزانه (تومان)' },
+          sqm:    { rate: 'نرخ هر متر (تومان)' },
+          hourly: { rate: 'نرخ ساعتی (تومان)' },
+          fixed:  { rate: 'مبلغ کل (تومان)' }
         };
-        const l = labels[calcType];
-        $('#wrkQtyLabel', root).textContent = l.qty;
-        $('#wrkRateLabel', root).textContent = l.rate;
-        $('#wrkQty', root).parentElement.style.display = calcType === 'fixed' ? 'none' : '';
+        $('#wrkRateLabel', root).textContent = labels[calcType].rate;
+
+        if (calcType === 'daily') {
+          $('#wrkModeGroup', root).style.display = '';
+          setModeChips();
+        } else {
+          $('#wrkModeGroup', root).style.display = 'none';
+          $('#wrkAutoGroup', root).style.display = 'none';
+          $('#wrkQtyGroup', root).style.display = '';
+
+          const qtyLabels = {
+            sqm:    'متراژ (متر)',
+            hourly: 'تعداد ساعت',
+            fixed:  '—'
+          };
+          $('#wrkQtyLabel', root).textContent = qtyLabels[calcType] || 'مقدار';
+          $('#wrkQty', root).parentElement.style.display = calcType === 'fixed' ? 'none' : '';
+        }
         updateTotal();
       };
 
       const updateTotal = () => {
-        const qty = parseFloat(toEn($('#wrkQty', root).value).replace(/[^\d.]/g, '')) || 0;
+        let qty = 0;
+        if (calcType === 'daily' && mode === 'auto') {
+          qty = calcDaysAuto();
+        } else {
+          qty = parseFloat(toEn($('#wrkQty', root).value).replace(/[^\d.]/g, '')) || 0;
+        }
+
         const rate = parseFloat(toEn($('#wrkRate', root).value).replace(/[^\d.]/g, '')) || 0;
         const total = calcType === 'fixed' ? rate : qty * rate;
         $('#wrkTotal', root).textContent = fmtMoney(total);
@@ -3094,12 +3221,29 @@ const WorkUI = {
       $$('#wrkCalcChips .chip', root).forEach((ch) => {
         ch.addEventListener('click', () => {
           calcType = ch.dataset.calc;
-          setChips();
+          setCalcChips();
+        });
+      });
+
+      $$('#wrkModeChips .chip', root).forEach((ch) => {
+        ch.addEventListener('click', () => {
+          mode = ch.dataset.mode;
+          setModeChips();
+          updateTotal();
         });
       });
 
       $('#wrkQty', root).addEventListener('input', updateTotal);
       $('#wrkRate', root).addEventListener('input', updateTotal);
+
+      ['#wrkStartDate', '#wrkEndDate'].forEach((s) => {
+        const el = $(s, root);
+        el.addEventListener('change', updateTotal);
+        el.addEventListener('input', updateTotal);
+        el.addEventListener('blur', updateTotal);
+      });
+
+      $('#wrkSkipFriday', root).addEventListener('change', updateTotal);
 
       $('#wrkCrew', root).addEventListener('change', () => {
         const sel = $('#wrkCrew', root);
@@ -3109,18 +3253,18 @@ const WorkUI = {
         if (rate > 0 && !$('#wrkRate', root).value) {
           $('#wrkRate', root).value = rate;
         }
-        if (isNew) {
+        if (isNew && !item.calcType) {
           calcType = type;
-          setChips();
         }
+        setCalcChips();
       });
 
-      setChips();
+      setCalcChips();
+      setModeChips();
       updateTotal();
 
       $('#wrkSave', root).addEventListener('click', () => {
         const crewId = $('#wrkCrew', root).value;
-        const qty = parseFloat(toEn($('#wrkQty', root).value).replace(/[^\d.]/g, '')) || 0;
         const rate = parseFloat(toEn($('#wrkRate', root).value).replace(/[^\d.]/g, '')) || 0;
         const date = $('#wrkDate', root).value.trim();
         const project = $('#wrkProject', root).value;
@@ -3128,12 +3272,46 @@ const WorkUI = {
         const paid = $('#wrkPaid', root).value === 'true';
 
         if (!crewId) { Toast.error('اکیپ را انتخاب کنید'); return; }
-        if (!JALALI.parseJ(date)) { Toast.error('تاریخ معتبر نیست'); return; }
+        if (!JALALI.parseJ(date)) { Toast.error('تاریخ ثبت معتبر نیست'); return; }
+
+        let qty = 0;
+        let startDate = '';
+        let endDate = '';
+        let skipFriday = false;
+
+        if (calcType === 'daily' && mode === 'auto') {
+          startDate = $('#wrkStartDate', root).value.trim();
+          endDate = $('#wrkEndDate', root).value.trim();
+          skipFriday = $('#wrkSkipFriday', root).checked;
+
+          if (!JALALI.parseJ(startDate)) { Toast.error('تاریخ شروع را وارد کنید'); return; }
+          if (!JALALI.parseJ(endDate)) { Toast.error('تاریخ پایان را وارد کنید'); return; }
+
+          const sp = JALALI.parseJ(startDate);
+          const ep = JALALI.parseJ(endDate);
+          if (JALALI.daysBetween(sp, ep) < 0) {
+            Toast.error('تاریخ پایان باید بعد از شروع باشد');
+            return;
+          }
+
+          qty = calcDaysAuto();
+          if (qty <= 0) { Toast.error('تعداد روز محاسبه‌شده صفر است'); return; }
+        } else {
+          qty = parseFloat(toEn($('#wrkQty', root).value).replace(/[^\d.]/g, '')) || 0;
+          if (calcType !== 'fixed' && qty <= 0) {
+            Toast.error('تعداد را وارد کنید');
+            return;
+          }
+        }
 
         const amount = calcType === 'fixed' ? rate : qty * rate;
         if (amount <= 0) { Toast.error('مبلغ محاسبه‌شده صفر است'); return; }
 
-        const data = { crewId, calcType, qty, rate, amount, date, project, description, paid };
+        const data = {
+          crewId, calcType, mode, qty, rate, amount, date,
+          startDate, endDate, skipFriday,
+          project, description, paid
+        };
 
         if (isNew) {
           State.works.push(Object.assign({ id: uid(), createdAt: Date.now() }, data));
